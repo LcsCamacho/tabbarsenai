@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
  } from 'react-native';
 import React, { useState } from 'react';
+import Animated, { FadeIn } from "react-native-reanimated"
 
 const statusBarHeight = StatusBar.currentHeight;
 
@@ -18,6 +19,19 @@ const array = Array.from({length: 20}, (_, i) => i + 1);
 
 export default function Destaques() {
   const [mostrarConteudo, setMostrarConteudo] = useState(false);
+  const setItem = async (key, value) => {
+    if(Platform.OS === 'web' ){
+        window.localStorage.setItem(key, value)
+        return
+    }
+    AsyncStorage.setItem(key, value);
+}
+
+console.log(Platform.OS)
+  const gerarPrecoAleatorio = () => {
+    return Math.floor(Math.random() * 1000);
+
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -32,13 +46,20 @@ export default function Destaques() {
             style={styles.flatList}
             data={array}
             keyExtractor={item => item.toString()}
-            renderItem={({ item }) => (
-            <TouchableOpacity style={styles.conteudo}>
-              <Image style={styles.conteudoImagem} 
-                source={"https://images.pexels.com/photos/45982/pexels-photo-45982.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"} />
-              <Text style={styles.conteudoText}>Destaque</Text>
-            </TouchableOpacity>
-          )}
+            renderItem={({ item }) => {
+              const preco = gerarPrecoAleatorio()
+              return (
+                <TouchableOpacity onPress={setItem("preco", preco)} style={styles.conteudo}>
+                  <Animated.View style={styles.containerAnimacao}
+                    entering={FadeIn.duration(2000)}>
+                    <Image style={styles.conteudoImagem} 
+                      source={"https://images.pexels.com/photos/45982/pexels-photo-45982.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"} />
+                    <Text style={styles.conteudoText}>Destaque</Text>
+                    <Text style={styles.preco}>R${preco}.99</Text>
+                  </Animated.View>
+                </TouchableOpacity>
+              )
+            }}
         />
         )}
 
@@ -51,8 +72,16 @@ export default function Destaques() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#121214',
+    flexDirection: 'row',
     paddingTop: Platform.OS === 'android' ? statusBarHeight : 25,
+  },
+  containerAnimacao: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    gap: 10,
   },
   conteudo: {
     flexDirection: 'row',
@@ -63,10 +92,10 @@ const styles = StyleSheet.create({
     gap: 10,
     height: 100,
     marginBottom: 20,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#121214',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    shadowColor: '#ccc',
+    shadowColor: '#fff',
     shadowOffset: {
       width: 0,
       height: 12,
@@ -82,13 +111,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    color: '#000',
+    color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
   },
   conteudoText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 20,
+  },
+  preco: {
+    color: '#f1f1f1',
+    fontSize: 20,
+    alignSelf: 'flex-end',
   },
   flatList: {
     flex: 1,

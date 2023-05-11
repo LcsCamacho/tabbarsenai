@@ -2,9 +2,9 @@
 import { Platform } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import Destaques from './pages/Destaques'
-import Profile from './pages/Profile'
-import Favorites from './pages/Favorites'
+import Destaques from './screens/Destaques'
+import Profile from './screens/Profile'
+import Favorites from './screens/Favorites'
 
 import { Ionicons } from '@expo/vector-icons'
 

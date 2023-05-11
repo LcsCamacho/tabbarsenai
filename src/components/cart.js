@@ -1,11 +1,30 @@
 import {useState} from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View, Platform, TouchableOpacity} from 'react-native';
+import { AsyncStorage } from 'react-native';
+
 
 export default function Cart() {
+    const [cart, setCart] = useState(0);
+
+    
+    const getItem = async (key) => {
+        if(Platform.OS === 'web' ){
+            let preco = window.localStorage.getItem('preco')
+            setCart(preco)
+            return
+        }
+        AsyncStorage.getItem(key)
+            .then((valor) => {
+          console.log(valor);
+        });
+    
+    }
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Icone</Text>
-        </View>
+        <>
+            <TouchableOpacity onPress={()=> getItem('teste')} style={styles.container2}>
+                <Text style={styles.title}>Get</Text>
+            </TouchableOpacity>
+        </>
     );
 }
 
@@ -17,13 +36,25 @@ const styles = StyleSheet.create({
         top: '10px',
         left: '10px',
         position: 'fixed',
-        backgroundColor: '#f1f1f1',
+        backgroundColor: '#f6f6f6',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 999,
+    },
+    container2: {
+        width: 50,
+        height: 50,
+        flex: 1,
+        top: '10px',
+        left: '60px',
+        position: 'fixed',
+        backgroundColor: '#f6f6f6',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 999,
     },
     title: {
-        color: '#000',
+        color: '#121214',
         fontSize: 20,
         fontWeight: 'bold',
     },
